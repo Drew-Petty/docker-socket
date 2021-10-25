@@ -1,0 +1,35 @@
+version: "3.3"
+services:
+  nginx:
+    depends_on:
+      - client
+      - backend
+    restart: always # because it is routing traffic to our entire app
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - '80:80'
+    # networks:
+    #   - app-network
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    restart: on-failure
+    container_name: client
+    # networks:
+    #   - app-network
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: on-failure
+    container_name: backend
+    ports: 
+      - '3001:3001'
+    # networks:
+    #   - app-network
+# networks:
+#   app-network:
+#     driver: bridge
